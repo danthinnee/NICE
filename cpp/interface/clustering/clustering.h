@@ -61,6 +61,14 @@ class KdacInterface : public PyInterface{
   }
 
   template <typename T>
+  void TemplateFit(const Matrix<T> &in_1,
+                   const Matrix<T> &in_2,
+                   Nice::KDAC<T> *kdac) {
+    kdac->Fit(in_1, in_2);
+  }
+
+
+  template <typename T>
   Matrix<T> TemplatePredict(Nice::KDAC<T> *kdac) {
     return kdac->Predict();
   }
@@ -95,6 +103,8 @@ class KdacInterface : public PyInterface{
   void SetupParams(const boost::python::dict &params);
   void Fit(PyObject *in, int row, int col);
   void Fit();
+  void Fit(PyObject *in_1, int row_1, int col_1,
+           PyObject *in_2, int row_2, int col_2);
   void Predict(PyObject *in, int row, int col);
   void GetU(PyObject *in, int row, int col);
   void GetW(PyObject *in, int row, int col);

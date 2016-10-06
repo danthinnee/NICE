@@ -143,11 +143,11 @@ void KdacInterface::Fit(PyObject *in, int row, int col) {
   // Initialze the input data
   switch (dtype_) {
     case FLOAT:
-      new (&input_fmat_) FMatrixMap(reinterpret_cast<float *>(pybuf.buf),
+      new (&input_fmat_[0]) FMatrixMap(reinterpret_cast<float *>(pybuf.buf),
                                     row, col);
       break;
     case DOUBLE:
-      new (&input_dmat_) DMatrixMap(reinterpret_cast<double *>(pybuf.buf),
+      new (&input_dmat_[0]) DMatrixMap(reinterpret_cast<double *>(pybuf.buf),
                                     row, col);
       break;
     default:
@@ -156,9 +156,9 @@ void KdacInterface::Fit(PyObject *in, int row, int col) {
 
   // Run Fit
   if (dtype_ == FLOAT) {
-    TemplateFit<float>(input_fmat_, f_kdac_.get());
+    TemplateFit<float>(input_fmat_[0], f_kdac_.get());
   } else if (dtype_ == DOUBLE) {
-    TemplateFit<double>(input_dmat_, d_kdac_.get());
+    TemplateFit<double>(input_dmat_[0], d_kdac_.get());
   }
 
 
@@ -171,6 +171,48 @@ void KdacInterface::Fit() {
   } else if (dtype_ == DOUBLE) {
     TemplateFit<double>(d_kdac_.get());
   }
+
+}
+
+void KdacInterface::Fit(PyObject *in_1, int row_1, int col_1,
+                        PyObject *in_2, int row_2, int col_2) {
+  // Get the python object buffer
+  Py_buffer pybuf_1;
+  PyObject_GetBuffer(in_1, &pybuf_1, PyBUF_SIMPLE);
+  Py_buffer pybuf_2;
+  PyObject_GetBuffer(in_2, &pybuf_2, PyBUF_SIMPLE);
+
+  // Initialze the input data
+  switch (dtype_) {
+    case FLOAT:
+      if (input_fmat_.size() < 2) {
+        input_fmat_.push_back(FMatrixMap(nullptr, 0, 0));
+      }
+      new (&input_fmat_[0]) FMatrixMap(reinterpret_cast<float *>(pybuf_1.buf),
+                                    row_1, col_1);
+      new (&input_fmat_[1]) FMatrixMap(reinterpret_cast<float *>(pybuf_2.buf),
+                                    row_2, col_2);
+      break;
+    case DOUBLE:
+      if (input_dmat_.size() < 2) {
+        input_dmat_.push_back(DMatrixMap(nullptr, 0, 0));
+      }
+      new (&input_dmat_[0]) DMatrixMap(reinterpret_cast<double *>(pybuf_1.buf),
+                                    row_1, col_1);
+      new (&input_dmat_[1]) DMatrixMap(reinterpret_cast<double *>(pybuf_2.buf),
+                                    row_2, col_2);
+      break;
+    default:
+      break;
+  }
+
+  // Run Fit
+  if (dtype_ == FLOAT) {
+    TemplateFit<float>(input_fmat_[0], input_fmat_[1], f_kdac_.get());
+  } else if (dtype_ == DOUBLE) {
+    TemplateFit<double>(input_dmat_[0], input_dmat_[1], d_kdac_.get());
+  }
+
 
 }
 
@@ -284,6 +326,10 @@ void (Nice::KdacInterface::*Fit1)(PyObject *, int row, int col)
   = &Nice::KdacInterface::Fit;
 void (Nice::KdacInterface::*Fit2)()
   = &Nice::KdacInterface::Fit;
+void (Nice::KdacInterface::*Fit3)(PyObject *, int row_1, int col_1,
+                                  PyObject *, int row_2, int col_2)
+  = &Nice::KdacInterface::Fit;
+
 
 BOOST_PYTHON_MODULE(Nice4Py) {
   boost::python::enum_<Nice::DataType>("DataType")
@@ -294,6 +340,7 @@ BOOST_PYTHON_MODULE(Nice4Py) {
                                            boost::python::init<>())
     .def("Fit", Fit1)
     .def("Fit", Fit2)
+    .def("Fit", Fit3)
     .def("SetupParams", &Nice::KdacInterface::SetupParams)
     .def("Predict", &Nice::KdacInterface::Predict)
     .def("GetU", &Nice::KdacInterface::GetU)
