@@ -340,7 +340,7 @@ class CpuOperations {
   }
 
   /// returns determinant of Matrix a
-  /// 
+  ///
   /// \param a
   /// input matrix
   ///
@@ -350,11 +350,11 @@ class CpuOperations {
     if (a.rows() == 0 || a.cols() == 0) {
       std::cerr << "EMPTY MATRIX AS ARGUMENT!";
       exit(1);  // Exits the program
-    }else if (a.cols() != a.rows()) {
+    } else if (a.cols() != a.rows()) {
       std::cerr << "MATRIX IS NOT A SQUARE MATRIX!";
       exit(1);
       // If the determinant of a matrix is 0, it does not have an inverse.
-    } 
+    }
     return a.determinant();
   }
   /// static int Rank(const Matrix <T> &a) is a function that returns
