@@ -349,7 +349,7 @@ class CpuOperations {
   static T Determinant(const Matrix<T> &a) {
     if (a.rows() == 0 || a.cols() == 0) {
       std::cerr << "EMPTY MATRIX AS ARGUMENT!";
-      exit(-1);  // Exits the program
+      exit(1);  // Exits the program
     }else if (a.cols() != a.rows()) {
       std::cerr << "MATRIX IS NOT A SQUARE MATRIX!";
       exit(1);
@@ -380,7 +380,7 @@ class CpuOperations {
   static T FrobeniusNorm(const Matrix<T> &a) {
     if (a.rows() == 0 || a.cols() == 0) {
       std::cerr << "EMPTY MATRIX AS ARGUMENT!";
-      exit(-1);  // Exits the program
+      exit(1);  // Exits the program
     } else {
       return a.norm();
     }
@@ -456,9 +456,9 @@ class CpuOperations {
   /// Input Vector 2
   ///
   /// \return
-  /// This function returns a Vector of type bool
+  /// This sfunction returns a Vector of type bool
   static Vector<bool> LogicalAnd(const Vector<T> &a, const Vector<T> &b) {
-    if ((a.rows() != b.rows()) || (a.cols() != b.cols())) {
+    if ((a.ro2ws() != b.rows()) || (a.cols() != b.cols())) {
       std::cerr << "MATRICES ARE NOT THE SAME SIZE!";
       exit(1);  // Exits the program
     }

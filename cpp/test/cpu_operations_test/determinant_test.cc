@@ -40,9 +40,9 @@ TYPED_TEST(DeterminantTest, SingularMatrix) {
 
 TYPED_TEST(DeterminantTest, NonSquareMatrix) {
   this->input.setRandom(2, 3);
-  ASSERT_DEATH(this->GetDeterminant(), ".*");
+  ASSERT_DEATH(this->GetDeterminant(), "MATRIX IS NOT A SQUARE MATRIX!");
 }
 
 TYPED_TEST(DeterminantTest, EmptyMatrix) {
-  ASSERT_DEATH(this->GetDeterminant(), ".*");
+  ASSERT_DEATH(this->GetDeterminant(), "EMPTY MATRIX AS ARGUMENT!");
 }
