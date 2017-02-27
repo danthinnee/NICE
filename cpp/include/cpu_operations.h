@@ -456,9 +456,9 @@ class CpuOperations {
   /// Input Vector 2
   ///
   /// \return
-  /// This sfunction returns a Vector of type bool
+  /// This function returns a Vector of type bool
   static Vector<bool> LogicalAnd(const Vector<T> &a, const Vector<T> &b) {
-    if ((a.ro2ws() != b.rows()) || (a.cols() != b.cols())) {
+    if ((a.rows() != b.rows()) || (a.cols() != b.cols())) {
       std::cerr << "MATRICES ARE NOT THE SAME SIZE!";
       exit(1);  // Exits the program
     }
